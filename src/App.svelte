@@ -1,7 +1,12 @@
 <script>
   import IntervalTimer from "./IntervalTimer.svelte";
+  import RandomJenga from "./RandomJenga.svelte";
 
-  let activatedButtons = { intervalTimer: "", sandSimulation: "" };
+  let activatedButtons = {
+    intervalTimer: "",
+    sandSimulation: "",
+    randomJenga: "",
+  };
   let headlineString = "Select a Doodle:";
 
   function resetButtons() {
@@ -22,6 +27,12 @@
     activatedButtons.intervalTimer = "active";
     headlineString = "What a wonderful time:";
   }
+
+  function handleRandomJengaClick() {
+    resetButtons();
+    activatedButtons.randomJenga = "active";
+    headlineString = "...";
+  }
 </script>
 
 <main>
@@ -29,6 +40,13 @@
     <h1 class="headline">{headlineString}</h1>
 
     <dev class="buttonContainer">
+      <dev
+        class="doodleButton {activatedButtons.randomJenga}"
+        on:click={handleRandomJengaClick}
+      >
+        Some pilled Blocks
+      </dev>
+
       <dev
         class="doodleButton {activatedButtons.sandSimulation}"
         on:click={handleSandSimulationClick}
@@ -45,7 +63,8 @@
     </dev>
 
     <dev class="canvasContainer">
-      <IntervalTimer />
+      <!-- <IntervalTimer /> -->
+      <!-- <RandomJenga /> -->
       <dev />
     </dev>
   </dev>

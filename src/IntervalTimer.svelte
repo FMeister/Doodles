@@ -20,9 +20,13 @@
   function count() {
     currentTime = new Date().getTime();
     let elapsedTime = currentTime - startTime;
-    elapsedHours = floor(elapsedTime / (60 * 60 * 1000));
+    elapsedHours = Math.floor(elapsedTime / (60 * 60 * 1000));
     elapsedTime -= elapsedHours * (60 * 60 * 1000);
-    elapsedMilisecounds = elapsedTime - floor(elapsedTime / 1000) * 1000;
+    elapsedMinutes = Math.floor(elapsedTime / (60 * 1000));
+    elapsedTime -= elapsedMinutes * (60 * 1000);
+    elapsedSecounds = Math.floor(elapsedTime / 1000);
+    elapsedTime -= elapsedSecounds * 1000;
+    elapsedMilisecounds = elapsedTime;
 
     if (!stopCounting) {
       requestAnimationFrame(count);
@@ -32,7 +36,7 @@
 
 <main>
   <dev>
-    {elapsedHours} h {elapsedMinutes} min {elapsedSecounds} sec {elapsedMilisecounds}milisec
+    {elapsedHours} h {elapsedMinutes} min {elapsedSecounds} sec {elapsedMilisecounds}msec
   </dev>
   <dev on:click={start}> Start</dev>
   <dev on:click={stop}> Stop</dev>
