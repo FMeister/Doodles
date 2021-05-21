@@ -1,6 +1,4 @@
 <script>
-  import { Color, RGBADepthPacking, TetrahedronGeometry } from "./svelthree";
-
   import {
     Canvas,
     Scene,
@@ -19,7 +17,7 @@
     OrbitControls,
     DoubleSide,
     MathUtils,
-  } from "./svelthree.ts";
+  } from "../public/build/svelthree";
 
   let cubeGeometry = new BoxBufferGeometry(1, 1, 1);
   let cubeMaterial = new MeshStandardMaterial();
@@ -27,18 +25,83 @@
   let floorGeometry = new PlaneBufferGeometry(4, 4, 1);
   let floorMaterial = new MeshStandardMaterial();
 
-  let vertNumber = 10;
-  let horiNumber = 3;
+  let vertNumber = 30;
+  let horiNumber = 7;
+  let cubePositions = [];
+  let cubeScalings = [];
+  let cubeOffset = Math.floor(horiNumber / 2);
+
+  let dropPropability = 0.5;
+  let levelDropCounter = 0;
+  let minElementPerLevel = horiNumber;
+  recalcCubes();
+
+  function recalcCubes() {
+    cubePositions = [];
+    cubeScalings = [];
+
+    for (let z = 0; z < vertNumber; z++) {
+      levelDropCounter -= 1;
+      for (let x = 0; x < horiNumber; x++) {
+        if (
+          horiNumber - levelDropCounter > minElementPerLevel &&
+          Math.random() < dropPropability
+        ) {
+          levelDropCounter += 1;
+          continue;
+        }
+
+        if (z % 2 == 0) {
+          cubePositions.push([x - cubeOffset, z, 0]);
+          cubeScalings.push([1, 1, horiNumber]);
+          levelDropCounter -= 1;
+        } else {
+          cubePositions.push([0, z, x - cubeOffset]);
+          cubeScalings.push([horiNumber, 1, 1]);
+          levelDropCounter -= 1;
+        }
+      }
+    }
+
+    console.log(cubePositions);
+  }
 </script>
 
 <main>
-  <Canvas let:sti w={window.innerWidth * 0.9} h={window.innerHeight * 0.6}>
+  <input
+    type="number"
+    bind:value={vertNumber}
+    on:input={recalcCubes}
+    min="0"
+    max="40"
+  />
+  <input
+    type="number"
+    bind:value={horiNumber}
+    on:input={recalcCubes}
+    min="0"
+    max="15"
+  />
+  <input
+    type="number"
+    bind:value={dropPropability}
+    on:input={recalcCubes}
+    min="0"
+    max="1"
+    step="0.01"
+  />
+  <Canvas
+    let:sti
+    w={window.innerWidth * 0.9}
+    h={window.innerHeight * 0.6}
+    interactive
+  >
     <Scene {sti} let:scene id="scene1" props={{ background: 0xedf2f7 }}>
       <PerspectiveCamera
         {scene}
         id="cam1"
-        pos={[0, 0, 30]}
-        lookAt={[0, 0, 15]}
+        pos={[0, vertNumber, 30]}
+        lookAt={[0, vertNumber, 20]}
       />
       <AmbientLight {scene} intensity={1.25} />
       <DirectionalLight
@@ -49,38 +112,17 @@
         castShadow
       />
 
-      {#each Array(vertNumber) as _, iy}
-        {#each Array(horiNumber) as _, ix}
-          {#if iy % 2 == 0}
-            <Mesh
-              {scene}
-              geometry={cubeGeometry}
-              material={cubeMaterial}
-              mat={{ roughness: 0.9, metalness: 0.5, color: 0x8fd2ff }}
-              pos={[ix, iy, 0]}
-              rot={[0, 0, 0]}
-              scale={[1, 1, horiNumber]}
-              castShadow
-              receiveShadow
-            />
-          {:else}
-            <Mesh
-              {scene}
-              geometry={cubeGeometry}
-              material={cubeMaterial}
-              mat={{ roughness: 0.9, metalness: 0.5, color: 0x8fd2ff }}
-              pos={[
-                Math.floor(horiNumber / 2),
-                iy,
-                -Math.floor(horiNumber / 2) + ix,
-              ]}
-              rot={[0, MathUtils.degToRad(90), 0]}
-              scale={[1, 1, horiNumber]}
-              castShadow
-              receiveShadow
-            />
-          {/if}
-        {/each}
+      {#each Array(cubePositions.length) as _, i}
+        <Mesh
+          {scene}
+          geometry={cubeGeometry}
+          material={cubeMaterial}
+          mat={{ roughness: 0.9, metalness: 0.5, color: 0x8fd2ff }}
+          pos={cubePositions[i]}
+          scale={cubeScalings[i]}
+          castShadow
+          receiveShadow
+        />
       {/each}
 
       <Mesh
@@ -93,9 +135,9 @@
           // side: DoubleSide,
           color: 0xf7fafc,
         }}
-        pos={[0, -0.501, 0]}
+        pos={[0, -0.5, 0]}
         rot={[MathUtils.degToRad(-90), 0, 0]}
-        scale={[1, 1, 1]}
+        scale={[horiNumber, horiNumber, 1]}
         receiveShadow
       />
 
