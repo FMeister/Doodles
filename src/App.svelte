@@ -64,7 +64,7 @@
 
     <dev class="canvasContainer">
       <!-- <IntervalTimer /> -->
-      <!-- <RandomJenga /> -->
+      <RandomJenga />
       <dev />
     </dev>
   </dev>
@@ -104,7 +104,7 @@
   .buttonContainer {
     grid-row-start: doodleSelection;
     grid-row-end: doodleSelection;
-    display: flex;
+    /* display: flex; */
   }
 
   .doodleButton {
@@ -136,8 +136,8 @@
   .canvasContainer {
     grid-row-start: doodleDisplay;
     grid-row-end: doodleDisplay;
-    margin-left: 5em;
-    margin-right: 5em;
+    margin-left: auto;
+    margin-right: auto;
     box-shadow: 4px 6px 0px 1px rgba(0, 0, 0, 0.13);
     border-style: solid;
     border-radius: 1em;
