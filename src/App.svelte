@@ -5,7 +5,7 @@
   let activatedButtons = {
     intervalTimer: "",
     sandSimulation: "",
-    randomJenga: "",
+    randomJenga: "active",
   };
   let headlineString = "Select a Doodle:";
 
@@ -20,18 +20,21 @@
     resetButtons();
     activatedButtons.sandSimulation = "active";
     headlineString = "Look at this Sand:";
+    console.log(activatedButtons);
   }
 
   function handleIntervalTimerClick() {
     resetButtons();
     activatedButtons.intervalTimer = "active";
     headlineString = "What a wonderful time:";
+    console.log(activatedButtons);
   }
 
   function handleRandomJengaClick() {
     resetButtons();
     activatedButtons.randomJenga = "active";
     headlineString = "...";
+    console.log(activatedButtons);
   }
 </script>
 
@@ -40,13 +43,6 @@
     <h1 class="headline">{headlineString}</h1>
 
     <dev class="buttonContainer">
-      <dev
-        class="doodleButton {activatedButtons.randomJenga}"
-        on:click={handleRandomJengaClick}
-      >
-        Some pilled Blocks
-      </dev>
-
       <dev
         class="doodleButton {activatedButtons.sandSimulation}"
         on:click={handleSandSimulationClick}
@@ -60,11 +56,23 @@
       >
         An interval timer
       </dev>
+
+      <dev
+        class="doodleButton {activatedButtons.randomJenga}"
+        on:click={handleRandomJengaClick}
+      >
+        Some pilled Blocks
+      </dev>
     </dev>
 
     <dev class="canvasContainer">
-      <!-- <IntervalTimer /> -->
-      <RandomJenga />
+      {#if activatedButtons.randomJenga == "active"}
+        <RandomJenga />
+      {:else if (activatedButtons.intervalTimer = "active")}
+        <IntervalTimer />
+      {:else if (activatedButtons.sandSimulation = "active")}
+        <h1>Sand Sim</h1>
+      {/if}
       <dev />
     </dev>
   </dev>
